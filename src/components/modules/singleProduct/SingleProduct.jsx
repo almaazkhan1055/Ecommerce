@@ -38,7 +38,9 @@ const SingleProduct = () => {
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, []);
+
   !Object.keys(product).length > 0 && <div>Product not found</div>;
+
   return (
     <>
       <section class="text-gray-600 body-font overflow-hidden">

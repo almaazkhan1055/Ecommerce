@@ -6,6 +6,23 @@ const Cart = () => {
   const [total, setTotal] = useState(0);
 
   const carts = JSON.parse(localStorage.getItem("cart")) || [];
+
+  useEffect(() => {
+    console.log("in cart useEffect");
+    const total = carts.reduce((acc, item) => {
+      return acc + item?.price * item?.quantity;
+    }, 0);
+    setTotal(total);
+  }, [carts]);
+
+  const removeProduct = (id) => {
+    console.log("id", id, carts);
+    const updatedCart = carts.filter((item) => item.id !== id);
+    console.log("updatedCart", updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    navigate("/cart");
+  };
+
   if (!carts.length) {
     return (
       <div>
@@ -15,17 +32,7 @@ const Cart = () => {
       </div>
     );
   }
-  useEffect(() => {
-    const total = carts.reduce((acc, item) => {
-      return acc + item.price * item.quantity;
-    }, 0);
-    setTotal(total);
-  }, []);
-  const removeProduct = (id) => {
-    const updatedCart = carts.filter((item) => item.id !== id);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    navigate("/cart");
-  };
+
   return (
     <>
       <div
@@ -73,59 +80,62 @@ const Cart = () => {
                         </button>
                       </div>
                     </div>
-                    {carts.map((cart) => {
-                      return (
-                        <div className="mt-8">
-                          <div className="flow-root">
-                            <ul
-                              role="list"
-                              className="-my-6 divide-y divide-gray-200"
-                            >
-                              <li className="flex py-6">
-                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                  <img
-                                    src={cart?.image}
-                                    alt={cart?.title}
-                                    className="h-full w-full object-cover object-center"
-                                  />
-                                </div>
+                    {carts.length > 0 &&
+                      carts?.map((cart) => {
+                        return (
+                          <div className="mt-8">
+                            <div className="flow-root">
+                              <ul
+                                role="list"
+                                className="-my-6 divide-y divide-gray-200"
+                              >
+                                <li className="flex py-6">
+                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                    <img
+                                      src={cart?.image}
+                                      alt={cart?.title}
+                                      className="h-full w-full object-cover object-center"
+                                    />
+                                  </div>
 
-                                <div className="ml-4 flex flex-1 flex-col">
-                                  <div>
-                                    <div className="flex justify-between text-base font-medium text-gray-900">
-                                      <h3>
-                                        <a href="#">{cart?.title}</a>
-                                      </h3>
-                                      <p className="ml-4">
-                                        ${cart?.price * cart?.quantity}
+                                  <div className="ml-4 flex flex-1 flex-col">
+                                    <div>
+                                      <div className="flex justify-between text-base font-medium text-gray-900">
+                                        <h3>
+                                          <a href="#">{cart?.title}</a>
+                                        </h3>
+                                        <p className="ml-4">
+                                          ${cart?.price * cart?.quantity}
+                                        </p>
+                                      </div>
+                                      <p className="mt-1 text-sm text-gray-500">
+                                        {cart?.category}
                                       </p>
                                     </div>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                      {cart?.category}
-                                    </p>
-                                  </div>
-                                  <div className="flex flex-1 items-end justify-between text-sm">
-                                    <p className="text-gray-500">
-                                      QTY: {cart?.quantity}
-                                    </p>
+                                    <div className="flex flex-1 items-end justify-between text-sm">
+                                      <p className="text-gray-500">
+                                        QTY: {cart?.quantity}
+                                      </p>
 
-                                    <div className="flex">
-                                      <button
-                                        type="button"
-                                        className="font-medium text-indigo-600 hover:text-indigo-500"
-                                        onClick={() => removeProduct(cart?.id)}
-                                      >
-                                        Remove
-                                      </button>
+                                      <div className="flex">
+                                        <button
+                                          type="button"
+                                          className="font-medium text-indigo-600 hover:text-indigo-500"
+                                          onClick={() =>
+                                            removeProduct(cart?.id)
+                                          }
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </li>
-                            </ul>
+                                </li>
+                              </ul>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
 
                   <div className="border-t border-gray-200 px-4 py-6 sm:px-6">

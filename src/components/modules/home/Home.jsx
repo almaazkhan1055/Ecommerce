@@ -7,11 +7,13 @@ import Categories from "../../categories/Categories";
 
 const Home = () => {
   const [products, setproducts] = useState([]);
+
   useEffect(() => {
     fetch("https://fakestoreapi.com/products?limit=8")
       .then((res) => res.json())
       .then((data) => setproducts(data));
   }, []);
+
   return (
     <>
       <Hero />
